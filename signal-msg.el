@@ -23,9 +23,7 @@
                                              signal-msg-username))))
     (with-temp-buffer
       (insert-file-contents data-file)
-      (json-read)
-      )
-    ))
+      (json-read))))
 
 ;; (signal-msg--get-data-json)
 
@@ -33,10 +31,8 @@
 (defun signal-msg--contact-to-line (contact)
   "Convert a contact alist to a cons cell with (name-number . number)."
   (let* ((name (alist-get 'name contact))
-         (number (alist-get 'number contact))
-         )
-    (cons (concat name ": " number)  number)
-    ))
+         (number (alist-get 'number contact)))
+    (cons (concat name ": " number)  number)))
 
 ;; (signal-msg--contact-to-line '((name . "Some Name") (number . "+123456")))
 
@@ -44,10 +40,8 @@
 (defun signal-msg--lines-and-numbers ()
   (let* ((data (signal-msg--get-data-json))
          (contact-store (alist-get 'contactStore data))
-         (contacts (alist-get 'contacts contact-store))
-         )
-    (mapcar 'signal-msg--contact-to-line contacts)
-    ))
+         (contacts (alist-get 'contacts contact-store)))
+    (mapcar 'signal-msg--contact-to-line contacts)))
 
 
 ;; (signal-msg--lines-and-numbers)
@@ -57,10 +51,8 @@
   (let* ((lines-and-numbers (signal-msg--lines-and-numbers))
          (lines (mapcar 'car lines-and-numbers))
          (line (completing-read "Contact: " lines))
-         (number (cdr (assoc line lines-and-numbers)))
-         )
-    number
-    ))
+         (number (cdr (assoc line lines-and-numbers))))
+    number))
 
 ;; (signal-msg--select-number)
 
@@ -75,8 +67,7 @@
 
 
 (define-derived-mode signal-msg-mode text-mode "Signal"
-  "Signal Message Mode"
-  )
+  "Signal Message Mode")
 
 
 (defun signal-msg-send ()
@@ -88,22 +79,18 @@
    nil                                  ;delete
    nil                                  ;destination
    nil                                  ;display
-   "-u" signal-msg-username "send" signal-msg-dest-number
-   )
-  (kill-buffer)
-  )
+   "-u" signal-msg-username "send" signal-msg-dest-number)
+  (kill-buffer))
 
 
 
 (defun signal-msg-new-message ()
   (interactive)
   (let ((number (signal-msg--select-number))
-        (buffer (generate-new-buffer "*new singal message*"))
-        )
+        (buffer (generate-new-buffer "*new singal message*")))
     (switch-to-buffer buffer)
     (signal-msg-mode)
-    (setq-local signal-msg-dest-number number)
-    ))
+    (setq-local signal-msg-dest-number number)))
 
 ;; (signal-msg-new-message)
 
